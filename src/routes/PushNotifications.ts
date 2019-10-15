@@ -11,6 +11,7 @@ const router = Router();
 router.post('/', async (req: Request, res: Response) => {
   try {
     console.log(req);
+    return res.status(OK).json({ ok: true })
   } catch (err) {
       logger.error(err.message, err);
       return res.status(BAD_REQUEST).json({
