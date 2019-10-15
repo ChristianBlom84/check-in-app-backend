@@ -3,9 +3,9 @@ import express from "express";
 import logger from "morgan";
 import path from "path";
 import BaseRouter from "./routes";
-
 import { Request, Response } from "express";
 import { jwtCookieProps } from "@shared";
+const mongoose = require("mongoose");
 
 // Init express
 const app = express();
@@ -38,6 +38,14 @@ app.get("/", (req: Request, res: Response) => {
         res.sendFile('users.html', {root: viewsDir});
     }
 }); */
+
+mongoose.connect(
+  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0-ttyzl.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+);
 
 app.get("/message", (req: Request, res: Response) => {
   const jwt = req.signedCookies[jwtCookieProps.key];
