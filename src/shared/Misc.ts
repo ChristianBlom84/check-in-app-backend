@@ -21,20 +21,20 @@ export const pwdSaltRounds = 12;
 
 /* Functions */
 
-export const pErr = (err: Error) => {
+export const pErr = (err: Error): void => {
     if (err) {
         logger.error(err);
     }
 };
 
 
-export const getRandomInt = () => {
+export const getRandomInt = (): number => {
     return Math.floor(Math.random() * 1_000_000_000_000);
 };
 
 
 // Middleware to verify if user is an admin
-export const adminMW = async (req: Request, res: Response, next: NextFunction) => {
+export const adminMW = async (req: Request, res: Response, next: NextFunction): Promise<NextFunction | Response | undefined> => {
     try {
         // Get json-web-token
         const jwt = req.signedCookies[jwtCookieProps.key];
