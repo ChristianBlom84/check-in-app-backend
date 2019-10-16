@@ -1,4 +1,5 @@
-let dotenv = require('dotenv');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const dotenv = require('dotenv');
 
 // Set default to "development"
 const nodeEnv = process.env.ENV_FILE || 'development';

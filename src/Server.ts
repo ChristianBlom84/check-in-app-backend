@@ -5,7 +5,7 @@ import path from "path";
 import BaseRouter from "./routes";
 import { Request, Response } from "express";
 import { jwtCookieProps } from "@shared";
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Init express
 const app = express();
