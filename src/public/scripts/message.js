@@ -6,6 +6,9 @@ button.addEventListener('click', () => {
     
     const data = {
         message: messageInput.value
-    }
-    console.log(data)
-})
+    };
+
+    Http.Post('/api/push/send', data)
+    .then(() => {
+        window.location.href = '/message';
+    })})
