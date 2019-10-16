@@ -3,6 +3,11 @@ import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
 import { paramMissingError, logger, adminMW } from "@shared";
 import { Subscriber } from "../models/subscriber";
 
+interface SubscriberData {
+  pushToken: string;
+  email: string;
+}
+
 // Init shared
 const router = Router();
 
@@ -11,10 +16,14 @@ const router = Router();
  ******************************************************************************/
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const subscriberData = req.body;
+    const subscriberData: SubscriberData = req.body;
     console.log(subscriberData);
-    Subscriber.create(subscriberData);
-    return res.status(OK).json({ ok: true });
+    const subscriber = await Subscriber.findOne({ pushToken: subscriberData.pushToken });
+    if (!subscriber) {
+      Subscriber.create(subscriberData);
+      return res.status(CREATED).json(subscriberData);
+    }
+    return res.status(BAD_REQUEST).json({ error: "Device already registered." })
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({

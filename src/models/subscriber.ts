@@ -6,10 +6,11 @@ export interface ISubscriber extends Document {
 }
 
 const SubscriberSchema: Schema = new Schema({
-  email: { type: String, required: true, unique: true },
+  email: { type: String, required: true },
   pushToken: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   }
 });
 
