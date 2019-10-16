@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@types/mongoose": "^5.5.20",
+    "@types/node-fetch": "^2.5.2",
     "bcrypt": "^3.0.6",
     "cookie-parser": "^1.4.4",
     "cross-env": "^6.0.3",
@@ -25,6 +26,8 @@
     "module-alias": "^2.2.2",
     "mongoose": "^5.7.5",
     "morgan": "^1.9.1",
+    "node-fetch": "^2.6.0",
+    "promise-limit": "^2.7.0",
     "randomstring": "^1.1.5",
     "winston": "^3.2.1"
   },
