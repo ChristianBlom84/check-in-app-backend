@@ -38,17 +38,17 @@ router.post('/', async (req: Request, res: Response) => {
 });
 
 router.post('/send', async (req: Request, res: Response) => {
-  let messages: ExpoPushMessage[] = [];
-  let expo = new Expo();
+  const messages: ExpoPushMessage[] = [];
+  const expo = new Expo();
 
-  let messageData = req.body;
+  const messageData = req.body;
 
   const subscribers = await Subscriber.find({}).select('pushToken -_id');
   console.log(subscribers);
-  for (let subscriber of subscribers) {
+  for (const subscriber of subscribers) {
     if (!Expo.isExpoPushToken(subscriber.pushToken)) {
       console.error(
-        `Push token ${subscriber.pushToken} is not a valid Expo push token`
+        `Push token ${subscriber.pushToken} is not a valid Expo push token`
       );
       continue;
     }
@@ -60,26 +60,32 @@ router.post('/send', async (req: Request, res: Response) => {
     });
   }
 
-  let chunks = expo.chunkPushNotifications(messages);
-  let tickets = [];
-  (async () => {
-    // Send the chunks to the Expo push notification service. There are
-    // different strategies you could use. A simple one is to send one chunk at a
-    // time, which nicely spreads the load out over time:
-    for (let message of messages) {
-      try {
-        let ticketChunk = await expo.sendPushNotificationsAsync([message]);
-        console.log(ticketChunk);
-        tickets.push(...ticketChunk);
-        // NOTE: If a ticket contains an error code in ticket.details.error, you
-        // must handle it appropriately. The error codes are listed in the Expo
-        // documentation:
-        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-      } catch (error) {
-        console.error(error);
-      }
+  // const chunks = expo.chunkPushNotifications(messages);
+  const tickets = [];
+  const errors = [];
+  // Send the chunks to the Expo push notification service. There are
+  // different strategies you could use. A simple one is to send one chunk at a
+  // time, which nicely spreads the load out over time:
+  for (const message of messages) {
+    try {
+      const ticketChunk = await expo.sendPushNotificationsAsync([message]);
+      console.log(ticketChunk);
+      tickets.push(...ticketChunk);
+      // NOTE: If a ticket contains an error code in ticket.details.error, you
+      // must handle it appropriately. The error codes are listed in the Expo
+      // documentation:
+      // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+    } catch (error) {
+      console.error(error);
+      errors.push(error);
     }
-  })();
+  }
+  if (errors.length > 0) {
+    console.log("Errors: ", errors);
+    res.status(500).json(errors);
+  } else {
+    res.status(200).json(tickets);
+  }
 });
 
 export default router;
