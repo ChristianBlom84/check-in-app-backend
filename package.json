@@ -57,5 +57,8 @@
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.6.4"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
