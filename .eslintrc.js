@@ -12,7 +12,8 @@ module.exports = {
         'browser': true,
         'es6': true,
         'jest': true,
-        'node': true
+        'node': true,
+        'jasmine': true
     },
     'extends': [
         'eslint:recommended',
@@ -22,6 +23,13 @@ module.exports = {
 
     ],
     'rules': {
-        '@typescript-eslint/interface-name-prefix': 'off'
+        '@typescript-eslint/interface-name-prefix': 'off',
+        'prettier/prettier': [
+            'error',
+            {
+                'singleQuote': true,
+                'tabWidth': 2
+            }
+        ]
     }
 };

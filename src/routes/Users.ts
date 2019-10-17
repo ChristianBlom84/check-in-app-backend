@@ -1,10 +1,10 @@
-import { Request, Response, Router } from "express";
-import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
-import { check, validationResult } from "express-validator";
-import bcrypt from "bcrypt";
-import { User } from "../models/User";
-import { paramMissingError, userNotFoundError, logger, adminMW } from "@shared";
-import { UserRoles } from "@entities";
+import { Request, Response, Router } from 'express';
+import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
+import { check, validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
+import { User } from '../models/User';
+import { paramMissingError, userNotFoundError, logger, adminMW } from '@shared';
+import { UserRoles } from '@entities';
 
 // Init shared
 const router = Router();
@@ -13,9 +13,9 @@ const router = Router();
  *                      Get All Users - "GET /api/users/all"
  ******************************************************************************/
 
-router.get("/all", adminMW, async (req: Request, res: Response) => {
+router.get('/all', adminMW, async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}).select("-password");
+    const users = await User.find({}).select('-password');
     return res.status(OK).json({ users });
   } catch (err) {
     logger.error(err.message, err);
@@ -30,17 +30,17 @@ router.get("/all", adminMW, async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.post(
-  "/add",
+  '/add',
   adminMW,
   [
-    check("name", "You must specify a name")
+    check('name', 'You must specify a name')
       .not()
       .isEmpty()
       .bail()
       .trim()
       .escape(),
-    check("email", "Please include a valid email").isEmail(),
-    check("password", "Password is required").exists()
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password is required').exists()
   ],
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -91,19 +91,19 @@ router.post(
  ******************************************************************************/
 
 router.put(
-  "/update",
+  '/update',
   adminMW,
   [
-    check("email", "Please include a valid email")
+    check('email', 'Please include a valid email')
       .not()
       .isEmpty(),
-    check("name")
+    check('name')
       .optional()
       .escape(),
-    check("role")
+    check('role')
       .optional()
       .isInt({ min: 0, max: 1 }),
-    check("password")
+    check('password')
       .optional()
       .trim()
   ],
@@ -151,11 +151,11 @@ router.put(
  *                    Delete - "DELETE /api/users/delete/:id"
  ******************************************************************************/
 
-router.delete("/delete", adminMW, async (req: Request, res: Response) => {
+router.delete('/delete', adminMW, async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOneAndDelete({ email }).select("-pwdHash");
+    const user = await User.findOneAndDelete({ email }).select('-pwdHash');
     return res.status(OK).json(user);
   } catch (err) {
     logger.error(err.message, err);

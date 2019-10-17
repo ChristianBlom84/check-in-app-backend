@@ -26,11 +26,11 @@ export class User implements IUser {
     role?: TUserRoles,
     pwdHash?: string
   ) {
-    if (typeof nameOrUser === "string" || typeof nameOrUser === "undefined") {
-      this.name = nameOrUser || "";
-      this.email = email || "";
+    if (typeof nameOrUser === 'string' || typeof nameOrUser === 'undefined') {
+      this.name = nameOrUser || '';
+      this.email = email || '';
       this.role = role || UserRoles.Standard;
-      this.pwdHash = pwdHash || "";
+      this.pwdHash = pwdHash || '';
     } else {
       this.name = nameOrUser.name;
       this.email = nameOrUser.email;

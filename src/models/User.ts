@@ -1,4 +1,4 @@
-import { model, Model, Schema, Document } from "mongoose";
+import { model, Model, Schema, Document } from 'mongoose';
 
 export enum UserRoles {
   Standard,
@@ -26,4 +26,4 @@ const UserSchema: Schema = new Schema({
   }
 });
 
-export const User: Model<IUserModel> = model<IUserModel>("User", UserSchema);
+export const User: Model<IUserModel> = model<IUserModel>('User', UserSchema);

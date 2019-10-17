@@ -1,4 +1,4 @@
-import { model, Model, Schema, Document } from "mongoose";
+import { model, Model, Schema, Document } from 'mongoose';
 
 export interface ISubscriber extends Document {
   email: string;
@@ -15,6 +15,6 @@ const SubscriberSchema: Schema = new Schema({
 });
 
 export const Subscriber: Model<ISubscriber> = model<ISubscriber>(
-  "Subscriber",
+  'Subscriber',
   SubscriberSchema
 );
