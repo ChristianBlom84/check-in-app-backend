@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
-import { paramMissingError, logger, adminMW } from '@shared';
+import { logger, adminMW } from '@shared';
 import { Subscriber } from '../models/subscriber';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
 
@@ -37,7 +37,10 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/send', async (req: Request, res: Response) => {
+/******************************************************************************
+ *                Send Push Notification - "POST /api/push/send"
+ ******************************************************************************/
+router.post('/send', adminMW, async (req: Request, res: Response) => {
   const messages: ExpoPushMessage[] = [];
   const expo = new Expo();
 
@@ -81,10 +84,10 @@ router.post('/send', async (req: Request, res: Response) => {
     }
   }
   if (errors.length > 0) {
-    console.log("Errors: ", errors);
-    res.status(500).json(errors);
+    console.log('Errors: ', errors);
+    res.status(BAD_REQUEST).json(errors);
   } else {
-    res.status(200).json(tickets);
+    res.status(OK).json(tickets);
   }
 });
 

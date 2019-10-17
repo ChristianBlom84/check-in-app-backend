@@ -1,6 +1,6 @@
-import randomString from "randomstring";
-import jsonwebtoken, { VerifyErrors } from "jsonwebtoken";
-import { jwtCookieExp } from "./cookies";
+import randomString from 'randomstring';
+import jsonwebtoken, { VerifyErrors } from 'jsonwebtoken';
+import { jwtCookieExp } from './cookies';
 
 interface IClientData {
   role: number;
@@ -9,12 +9,12 @@ interface IClientData {
 export class JwtService {
   private readonly secret: string;
   private readonly options: object;
-  private readonly VALIDATION_ERROR = "JSON-web-token validation failed.";
+  private readonly VALIDATION_ERROR = 'JSON-web-token validation failed.';
 
   constructor() {
     this.secret = process.env.JWT_SECRET || randomString.generate(100);
     this.options = {
-      expiresIn: jwtCookieExp + " days"
+      expiresIn: jwtCookieExp + ' days'
     };
   }
 

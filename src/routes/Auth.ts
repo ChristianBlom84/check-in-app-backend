@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import { Request, Response, Router } from "express";
-import { BAD_REQUEST, OK, UNAUTHORIZED } from "http-status-codes";
-import { User } from "../models/User";
+import bcrypt from 'bcrypt';
+import { Request, Response, Router } from 'express';
+import { BAD_REQUEST, OK, UNAUTHORIZED } from 'http-status-codes';
+import { User } from '../models/User';
 
 import {
   paramMissingError,
@@ -9,7 +9,7 @@ import {
   logger,
   jwtCookieProps,
   JwtService
-} from "@shared";
+} from '@shared';
 
 const router = Router();
 const jwtService = new JwtService();
@@ -18,7 +18,7 @@ const jwtService = new JwtService();
  *                      Login User - "POST /api/auth/login"
  ******************************************************************************/
 
-router.post("/login", async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     // Check email and password present
     const { email, password } = req.body;
@@ -61,7 +61,7 @@ router.post("/login", async (req: Request, res: Response) => {
  *                      Logout - "GET /api/auth/logout"
  ******************************************************************************/
 
-router.get("/logout", async (req: Request, res: Response) => {
+router.get('/logout', async (req: Request, res: Response) => {
   try {
     const { key, options } = jwtCookieProps;
     res.clearCookie(key, options);
