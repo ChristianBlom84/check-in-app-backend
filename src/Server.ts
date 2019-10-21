@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(cors());
+app.use(cors({ origin: process.env.CORS, credentials: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
 
@@ -28,19 +28,6 @@ app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
-app.get('/', (req: Request, res: Response) => {
-  res.sendFile('login.html', { root: viewsDir });
-});
-
-/* app.get('/users', (req: Request, res: Response) => {
-    const jwt = req.signedCookies[jwtCookieProps.key];
-    if (!jwt) {
-        res.redirect('/');
-    } else {
-        res.sendFile('users.html', {root: viewsDir});
-    }
-}); */
-
 mongoose.connect(
   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}@cluster0-ttyzl.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`,
   {
@@ -48,15 +35,6 @@ mongoose.connect(
     useUnifiedTopology: true
   }
 );
-
-app.get('/message', (req: Request, res: Response) => {
-  const jwt = req.signedCookies[jwtCookieProps.key];
-  if (!jwt) {
-    res.redirect('/');
-  } else {
-    res.sendFile('message.html', { root: viewsDir });
-  }
-});
 
 // Export express instance
 export default app;

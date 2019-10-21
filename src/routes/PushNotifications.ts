@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
-import { logger, adminMW } from '@shared';
-import { Subscriber } from '../models/subscriber';
+import { BAD_REQUEST, OK } from 'http-status-codes';
+import { adminMW } from '@shared';
+import { Subscriber } from '../models/Subscriber';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
 
 interface SubscriberData {
@@ -11,31 +11,6 @@ interface SubscriberData {
 
 // Init shared
 const router = Router();
-
-/******************************************************************************
- *                Register Expo Push Token - "POST /api/push"
- ******************************************************************************/
-router.post('/', async (req: Request, res: Response) => {
-  try {
-    const subscriberData: SubscriberData = req.body;
-    console.log(subscriberData);
-    const subscriber = await Subscriber.findOne({
-      pushToken: subscriberData.pushToken
-    });
-    if (!subscriber) {
-      Subscriber.create(subscriberData);
-      return res.status(CREATED).json(subscriberData);
-    }
-    return res
-      .status(BAD_REQUEST)
-      .json({ error: 'Device already registered.' });
-  } catch (err) {
-    logger.error(err.message, err);
-    return res.status(BAD_REQUEST).json({
-      error: err.message
-    });
-  }
-});
 
 /******************************************************************************
  *                Send Push Notification - "POST /api/push/send"
