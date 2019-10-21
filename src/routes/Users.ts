@@ -15,7 +15,7 @@ const router = Router();
 
 router.get('/all', adminMW, async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}).select('-password');
+    const users = await User.find({}).select('-pwdHash');
     return res.status(OK).json({ users });
   } catch (err) {
     logger.error(err.message, err);
