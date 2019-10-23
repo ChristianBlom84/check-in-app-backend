@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import logger from 'morgan';
 import path from 'path';
-import mongoose from 'mongoose';
 import BaseRouter from './routes';
 import { connectDB } from '../util/connectDb';
 
