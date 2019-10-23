@@ -4,9 +4,10 @@ import bcrypt from 'bcrypt';
 
 import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from 'http-status-codes';
 import { Response, SuperTest, Test } from 'supertest';
-import { IUser, User, UserRoles } from '@entities';
+import { setupDb, dropTables, tearDownDb } from './support/DbHelper';
+import { UserRoles } from '@entities';
+import { User } from '../src/models/User';
 import { pErr, pwdSaltRounds, jwtCookieProps, loginFailedErr } from '@shared';
-import { UserDao } from '@daos';
 
 describe('UserRouter', () => {
   const authPath = '/api/auth';
@@ -19,12 +20,20 @@ describe('UserRouter', () => {
     return bcrypt.hashSync(pwd, pwdSaltRounds);
   }
 
-  beforeAll(done => {
+  beforeAll(async done => {
+    await setupDb();
     agent = supertest.agent(app);
     done();
   });
 
+  afterAll(async () => {
+    await tearDownDb();
+  });
+
   describe(`"POST:${loginPath}"`, () => {
+    afterEach(async () => {
+      await dropTables();
+    });
     const callApi = (reqBody: object): supertest.Test => {
       return agent
         .post(loginPath)
@@ -36,15 +45,18 @@ describe('UserRouter', () => {
             was successful.`, done => {
       // Setup Dummy Data
       const creds = {
-        email: 'jsmith@gmail.com',
-        password: 'Password@1'
+        email: 'christian.blom@makingwaves.com',
+        password: 'secret'
       };
       const role = UserRoles.Standard;
       const pwdHash = hashPwd(creds.password);
-      const loginUser = new User('john smith', creds.email, role, pwdHash);
-      spyOn(UserDao.prototype, 'getOne').and.returnValue(
-        Promise.resolve(loginUser)
-      );
+      const loginUser = new User({
+        name: 'Christian Blom',
+        email: creds.email,
+        role,
+        pwdHash
+      });
+      loginUser.save();
       // Call API
       callApi(creds).end((err: Error, res: any) => {
         pErr(err);
@@ -61,7 +73,6 @@ describe('UserRouter', () => {
         email: 'jsmith@gmail.com',
         password: 'Password@1'
       };
-      spyOn(UserDao.prototype, 'getOne').and.returnValue(Promise.resolve(null));
       // Call API
       callApi(creds).end((err: Error, res: any) => {
         pErr(err);
@@ -75,39 +86,23 @@ describe('UserRouter', () => {
             "${loginFailedErr}" if the password failed.`, done => {
       // Setup Dummy Data
       const creds = {
-        email: 'jsmith@gmail.com',
+        email: 'christian.blom@makingwaves.com',
         password: 'someBadPassword'
       };
       const role = UserRoles.Standard;
       const pwdHash = hashPwd('Password@1');
-      const loginUser = new User('john smith', creds.email, role, pwdHash);
-      spyOn(UserDao.prototype, 'getOne').and.returnValue(
-        Promise.resolve(loginUser)
-      );
+      const loginUser = new User({
+        name: 'Christian Blom',
+        email: creds.email,
+        role,
+        pwdHash
+      });
+      loginUser.save();
       // Call API
       callApi(creds).end((err: Error, res: any) => {
         pErr(err);
         expect(res.status).toBe(UNAUTHORIZED);
         expect(res.body.error).toBe(loginFailedErr);
-        done();
-      });
-    });
-
-    it(`should return a response with a status of ${BAD_REQUEST} and a json with an error
-            for all other bad responses.`, done => {
-      // Setup Dummy Data
-      const creds = {
-        email: 'jsmith@gmail.com',
-        password: 'someBadPassword'
-      };
-      spyOn(UserDao.prototype, 'getOne').and.throwError(
-        'Database query failed.'
-      );
-      // Call API
-      callApi(creds).end((err: Error, res: any) => {
-        pErr(err);
-        expect(res.status).toBe(BAD_REQUEST);
-        expect(res.body.error).toBeTruthy();
         done();
       });
     });

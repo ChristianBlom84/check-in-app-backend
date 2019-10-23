@@ -15,7 +15,7 @@ export const userNotFoundError = 'User not found.';
 export const loginFailedErr = 'Login failed';
 
 // Numbers
-export const pwdSaltRounds = 12;
+export const pwdSaltRounds = 10;
 
 /* Functions */
 
