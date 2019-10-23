@@ -16,6 +16,9 @@ const router = Router();
 router.get('/all', adminMW, async (req: Request, res: Response) => {
   try {
     const users = await User.find({}).select('-pwdHash');
+    if (!users) {
+      return res.status(BAD_REQUEST).json({ error: 'Could not fetch users.' });
+    }
     return res.status(OK).json({ users });
   } catch (err) {
     logger.error(err.message, err);
@@ -148,7 +151,7 @@ router.put(
 );
 
 /******************************************************************************
- *                    Delete - "DELETE /api/users/delete/:id"
+ *                    Delete - "DELETE /api/users/delete"
  ******************************************************************************/
 
 router.delete('/delete', adminMW, async (req: Request, res: Response) => {
@@ -156,6 +159,9 @@ router.delete('/delete', adminMW, async (req: Request, res: Response) => {
 
   try {
     const user = await User.findOneAndDelete({ email }).select('-pwdHash');
+    if (!user) {
+      return res.status(BAD_REQUEST).json({ error: 'Could not delete user.' });
+    }
     return res.status(OK).json(user);
   } catch (err) {
     logger.error(err.message, err);
