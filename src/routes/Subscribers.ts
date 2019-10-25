@@ -12,7 +12,7 @@ interface SubscriberData {
 const router = Router();
 
 /******************************************************************************
- *                      Get All Subscribers - "GET /api/subscribers/all"
+ *          Get All Subscribers - "GET /api/subscribers/all"
  ******************************************************************************/
 
 router.get('/all', adminMW, async (req: Request, res: Response) => {
@@ -28,7 +28,31 @@ router.get('/all', adminMW, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *                Register Expo Push Token - "POST /api/subscribers/register"
+ *          Check If Device Is Subscribed - "POST /api/subscribers/check-device"
+ ******************************************************************************/
+
+router.post('/check-device', async (req: Request, res: Response) => {
+  try {
+    const subscriber = await Subscriber.findOne({
+      pushToken: req.body.pushToken
+    });
+
+    if (!subscriber) {
+      return res.status(OK).json({ registered: false });
+    }
+    return res
+      .status(OK)
+      .json({ registered: true, withEmail: subscriber.email });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
+
+/******************************************************************************
+ *          Register Expo Push Token - "POST /api/subscribers/register"
  ******************************************************************************/
 router.post('/register', async (req: Request, res: Response) => {
   try {
