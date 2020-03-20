@@ -1,9 +1,10 @@
 import { Request, Response, Router } from 'express';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
-import { BAD_REQUEST, OK } from 'http-status-codes';
+import { BAD_REQUEST, OK, FORBIDDEN } from 'http-status-codes';
 import { adminMW, logger } from '@shared';
-import { Subscriber } from '../models/Subscriber';
+import { Subscriber } from '../models/subscriber';
 import { TicketChunk } from '../models/TicketChunk';
+import { Notification } from '../models/Notification';
 
 // Init shared
 const router = Router();
@@ -71,6 +72,45 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
     res.status(BAD_REQUEST).json(errors);
   } else {
     res.status(OK).json(tickets);
+  }
+  try {
+    const notification = {
+      date: new Date(),
+      message: messageData.message
+    };
+
+    const notificationModel = new Notification(notification);
+    await notificationModel.save();
+  } catch (error) {
+    logger.error(error);
+  }
+});
+
+/******************************************************************************
+ *        Get The Last Five Notifications - "GET /api/push/all"
+ ******************************************************************************/
+
+router.get('/all', async (req: Request, res: Response) => {
+  const { pushToken } = req.body;
+
+  try {
+    const subscriber = await Subscriber.findOne({
+      pushToken
+    });
+
+    if (!subscriber) {
+      return res.status(FORBIDDEN).send('You are not registered.');
+    }
+
+    const allNotifications = await Notification.find({});
+    const notifications = allNotifications.slice(0, 5);
+
+    return res.status(OK).json(notifications);
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
   }
 });
 
