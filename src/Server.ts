@@ -14,7 +14,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(cors({ origin: process.env.CORS, credentials: true }));
+app.use(
+  cors({
+    origin: ['http://localhost:3000', /192.168\$/],
+    credentials: true
+  })
+);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
 
