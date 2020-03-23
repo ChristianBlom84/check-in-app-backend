@@ -32,7 +32,7 @@ export class JwtService {
   }
 
   /**
-   * Decript JWT and extract client data.
+   * Decrypt JWT and extract client data.
    *
    * @param req
    */
