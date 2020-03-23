@@ -19,7 +19,7 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
   const messageData = req.body;
 
   const subscribers = await Subscriber.find({}).select('pushToken -_id');
-  console.log(subscribers);
+
   for (const subscriber of subscribers) {
     if (!Expo.isExpoPushToken(subscriber.pushToken)) {
       console.error(
@@ -31,7 +31,7 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
       to: subscriber.pushToken,
       sound: 'default',
       body: messageData.message,
-      data: { withSome: 'data' }
+      data: {}
     });
   }
 
@@ -87,10 +87,10 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
 });
 
 /******************************************************************************
- *        Get The Last Five Notifications - "GET /api/push/all"
+ *        Get The Last Five Notifications - "POST /api/push/all"
  ******************************************************************************/
 
-router.get('/all', async (req: Request, res: Response) => {
+router.post('/all', async (req: Request, res: Response) => {
   const { pushToken } = req.body;
 
   try {
@@ -103,7 +103,7 @@ router.get('/all', async (req: Request, res: Response) => {
     }
 
     const allNotifications = await Notification.find({});
-    const notifications = allNotifications.slice(0, 5);
+    const notifications = allNotifications.slice(0, 5).reverse();
 
     return res.status(OK).json(notifications);
   } catch (err) {

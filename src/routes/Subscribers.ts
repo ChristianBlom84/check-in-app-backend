@@ -34,7 +34,6 @@ router.get('/all', adminMW, async (req: Request, res: Response) => {
  ******************************************************************************/
 
 router.post('/check-device', async (req: Request, res: Response) => {
-	console.log(req);
 	try {
 		const subscriber = await Subscriber.findOne({
 			pushToken: req.body.pushToken
