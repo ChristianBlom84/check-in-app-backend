@@ -29,7 +29,7 @@ export const getRandomInt = (): number => {
   return Math.floor(Math.random() * 1_000_000_000_000);
 };
 
-// Middleware to verify if user is an admin
+// Middleware to verify that user is an admin
 export const adminMW = async (
   req: Request,
   res: Response,

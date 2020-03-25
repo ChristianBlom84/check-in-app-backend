@@ -2,9 +2,8 @@ import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
-import { User } from '../models/User';
+import { User, UserRoles } from '../models/User';
 import { paramMissingError, userNotFoundError, logger, adminMW } from '@shared';
-import { UserRoles } from '@entities';
 
 // Init shared
 const router = Router();
@@ -42,7 +41,12 @@ router.post(
       .bail()
       .trim()
       .escape(),
-    check('email', 'Please include a valid email').isEmail(),
+    check('organization')
+      .optional()
+      .escape(),
+    check('email', 'Please include a valid email')
+      .isEmail()
+      .escape(),
     check('password', 'Password is required').exists()
   ],
   async (req: Request, res: Response) => {
@@ -52,7 +56,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, role } = req.body;
+    const { name, organization, email, password, role } = req.body;
 
     try {
       // Check parameters
@@ -70,6 +74,7 @@ router.post(
 
       const user = new User({
         name,
+        organization,
         email,
         pwdHash,
         role: userRole
@@ -77,9 +82,12 @@ router.post(
 
       await user.save();
 
-      return res
-        .status(CREATED)
-        .json({ name: user.name, email: user.email, role: user.role });
+      return res.status(CREATED).json({
+        name: user.name,
+        organizationID: user.organization,
+        email: user.email,
+        role: user.role
+      });
     } catch (err) {
       logger.error(err.message, err);
       return res.status(BAD_REQUEST).json({
