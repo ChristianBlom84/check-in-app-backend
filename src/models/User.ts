@@ -7,11 +7,12 @@ export enum UserRoles {
 
 type TUserRoles = UserRoles.Standard | UserRoles.Admin;
 
-interface IUserModel extends Document {
-  id?: number;
+interface UserModel extends Document {
   name: string;
   email: string;
   pwdHash: string;
+  organization?: string;
+  notifications: [string];
   role: TUserRoles;
 }
 
@@ -19,6 +20,16 @@ const UserSchema: Schema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   pwdHash: { type: String, required: true },
+  organization: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organization'
+  },
+  notifications: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Notification'
+    }
+  ],
   role: {
     type: Number,
     max: 1,
@@ -26,4 +37,4 @@ const UserSchema: Schema = new Schema({
   }
 });
 
-export const User: Model<IUserModel> = model<IUserModel>('User', UserSchema);
+export const User: Model<UserModel> = model<UserModel>('User', UserSchema);

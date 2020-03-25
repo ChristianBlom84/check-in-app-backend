@@ -5,14 +5,17 @@ import { adminMW, logger } from '@shared';
 import { Subscriber } from '../models/subscriber';
 import { TicketChunk } from '../models/TicketChunk';
 import { Notification } from '../models/Notification';
+import { JwtService } from '@shared';
 
 // Init shared
 const router = Router();
+const jwtService = new JwtService();
 
 /******************************************************************************
  *                Send Push Notification - "POST /api/push/send"
  ******************************************************************************/
 router.post('/send', adminMW, async (req: Request, res: Response) => {
+  console.log(req);
   const messages: ExpoPushMessage[] = [];
   const expo = new Expo();
 
@@ -74,9 +77,16 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
     res.status(OK).json(tickets);
   }
   try {
+    const { userID } = await jwtService.decodeJwt(
+      req.signedCookies.JwtCookieKey
+    );
+
+    console.log(userID);
+
     const notification = {
       date: new Date(),
-      message: messageData.message
+      message: messageData.message,
+      user: userID
     };
 
     const notificationModel = new Notification(notification);

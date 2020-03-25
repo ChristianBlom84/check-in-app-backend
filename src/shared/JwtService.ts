@@ -4,6 +4,7 @@ import { jwtCookieExp } from './cookies';
 
 interface IClientData {
   role: number;
+  userID: string;
 }
 
 export class JwtService {
@@ -32,7 +33,7 @@ export class JwtService {
   }
 
   /**
-   * Decript JWT and extract client data.
+   * Decrypt JWT and extract client data.
    *
    * @param req
    */

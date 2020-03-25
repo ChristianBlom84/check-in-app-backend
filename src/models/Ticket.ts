@@ -1,6 +1,6 @@
 import { model, Model, Schema, Document } from 'mongoose';
 
-export interface ITicket extends Document {
+export interface Ticket extends Document {
   status: string;
   id: string;
 }
@@ -10,4 +10,4 @@ const TicketSchema: Schema = new Schema({
   id: { type: String }
 });
 
-export const Ticket: Model<ITicket> = model<ITicket>('Ticket', TicketSchema);
+export const Ticket: Model<Ticket> = model<Ticket>('Ticket', TicketSchema);
