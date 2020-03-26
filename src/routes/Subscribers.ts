@@ -2,7 +2,7 @@
 import { Subscriber } from './../models/subscriber';
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
-import { logger, adminMW } from '@shared';
+import { logger, adminMW, userMW } from '@shared';
 
 interface SubscriberData {
   pushToken: string;
@@ -17,7 +17,7 @@ const router = Router();
  *          Get All Subscribers - "GET /api/subscribers/all"
  ******************************************************************************/
 
-router.get('/all', adminMW, async (req: Request, res: Response) => {
+router.get('/all', userMW, async (req: Request, res: Response) => {
 	try {
 		const subscribers = await Subscriber.find({});
 		return res.status(OK).json({ subscribers });
