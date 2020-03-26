@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import Expo, { ExpoPushMessage } from 'expo-server-sdk';
 import { BAD_REQUEST, OK, FORBIDDEN } from 'http-status-codes';
-import { adminMW, logger } from '@shared';
+import { userMW, logger } from '@shared';
 import { Subscriber } from '../models/subscriber';
 import { TicketChunk } from '../models/TicketChunk';
 import { Notification } from '../models/Notification';
@@ -14,8 +14,7 @@ const jwtService = new JwtService();
 /******************************************************************************
  *                Send Push Notification - "POST /api/push/send"
  ******************************************************************************/
-router.post('/send', adminMW, async (req: Request, res: Response) => {
-  console.log(req);
+router.post('/send', userMW, async (req: Request, res: Response) => {
   const messages: ExpoPushMessage[] = [];
   const expo = new Expo();
 
@@ -81,8 +80,6 @@ router.post('/send', adminMW, async (req: Request, res: Response) => {
       req.signedCookies.JwtCookieKey
     );
 
-    console.log(userID);
-
     const notification = {
       date: new Date(),
       message: messageData.message,
@@ -113,7 +110,7 @@ router.post('/all', async (req: Request, res: Response) => {
     }
 
     const allNotifications = await Notification.find({});
-    const notifications = allNotifications.slice(0, 5).reverse();
+    const notifications = allNotifications.reverse().slice(0, 5);
 
     return res.status(OK).json(notifications);
   } catch (err) {

@@ -54,3 +54,32 @@ export const adminMW = async (
     });
   }
 };
+
+// Middleware to verify that user is logged in and has a set user role
+export const userMW = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<NextFunction | Response | undefined> => {
+  try {
+    // Get json-web-token
+    const jwt = req.signedCookies[jwtCookieProps.key];
+    if (!jwt) {
+      throw Error('JWT not present in signed cookie.');
+    }
+    // Make sure user role is an admin
+    const clientData = await jwtService.decodeJwt(jwt);
+    if (
+      clientData.role === UserRoles.Admin ||
+      clientData.role === UserRoles.Standard
+    ) {
+      next();
+    } else {
+      throw Error('JWT not present in signed cookie.');
+    }
+  } catch (err) {
+    return res.status(UNAUTHORIZED).json({
+      error: err.message
+    });
+  }
+};

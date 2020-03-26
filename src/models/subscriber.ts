@@ -1,6 +1,7 @@
 import { model, Model, Schema, Document } from 'mongoose';
 
 export interface Subscriber extends Document {
+  name: string;
   email: string;
   pushToken: string;
 }
@@ -12,6 +13,10 @@ const SubscriberSchema: Schema = new Schema({
     type: String,
     required: true,
     unique: true
+  },
+  organization: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organization'
   }
 });
 
