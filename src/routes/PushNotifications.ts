@@ -33,7 +33,7 @@ router.post('/send', userMW, async (req: Request, res: Response) => {
       to: subscriber.pushToken,
       sound: 'default',
       body: messageData.message,
-      data: {}
+      data: { message: messageData.message }
     });
   }
 
