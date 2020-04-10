@@ -3,10 +3,49 @@ import { BAD_REQUEST, CREATED, OK } from 'http-status-codes';
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import { User, UserRoles } from '../models/User';
-import { paramMissingError, userNotFoundError, logger, adminMW } from '@shared';
+import {
+  paramMissingError,
+  userNotFoundError,
+  logger,
+  adminMW,
+  userMW
+} from '@shared';
+import { jwtCookieProps } from '../shared/cookies';
+import { JwtService } from '../shared/JwtService';
 
 // Init shared
 const router = Router();
+
+/******************************************************************************
+ *                      Get Current User - "GET /api/users/current"
+ ******************************************************************************/
+
+router.get('/current', userMW, async (req: Request, res: Response) => {
+  const jwtService = new JwtService();
+
+  try {
+    const jwt = req.signedCookies[jwtCookieProps.key];
+    if (!jwt) {
+      throw Error('JWT not present in signed cookie.');
+    }
+    const clientData = await jwtService.decodeJwt(jwt);
+
+    const user = await User.findOne({ _id: clientData.userID }).select(
+      '-pwdHash'
+    );
+
+    if (!user) {
+      return res.status(BAD_REQUEST).json({ error: 'Could not fetch user.' });
+    }
+
+    return res.status(OK).json({ user });
+  } catch (err) {
+    logger.error(err.message, err);
+    return res.status(BAD_REQUEST).json({
+      error: err.message
+    });
+  }
+});
 
 /******************************************************************************
  *                      Get All Users - "GET /api/users/all"

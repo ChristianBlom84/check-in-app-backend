@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import { BAD_REQUEST, OK, UNAUTHORIZED } from 'http-status-codes';
 import { User } from '../models/User';
-
 import {
   paramMissingError,
   loginFailedErr,
@@ -49,7 +48,7 @@ router.post('/login', async (req: Request, res: Response) => {
     const { key, options } = jwtCookieProps;
     res.cookie(key, jwt, options);
     // Return
-    return res.status(OK).end();
+    return res.status(OK).json({ role: user.role });
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({
@@ -65,7 +64,11 @@ router.post('/login', async (req: Request, res: Response) => {
 router.get('/logout', async (req: Request, res: Response) => {
   try {
     const { key, options } = jwtCookieProps;
-    res.clearCookie(key, options);
+    console.log(options.expires);
+    res.clearCookie(key, {
+      ...options,
+      expires: new Date(options.maxAge)
+    });
     return res.status(OK).end();
   } catch (err) {
     logger.error(err.message, err);
