@@ -8,6 +8,7 @@ export const jwtCookieProps = Object.freeze({
     path: process.env.JWT_COOKIE_PATH,
     httpOnly: process.env.HTTP_ONLY_COOKIE === 'true',
     signed: process.env.SIGNED_COOKIE === 'true',
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * Number(jwtCookieExp)),
     maxAge: 1000 * 60 * 60 * 24 * Number(jwtCookieExp),
     domain: process.env.COOKIE_DOMAIN,
     secure: process.env.SECURE_COOKIE === 'true'
