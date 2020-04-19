@@ -99,7 +99,7 @@ router.post(
 
     try {
       // Check parameters
-      if (!name || !email || !password || !role) {
+      if (!name || !email || !password || role === undefined) {
         return res.status(BAD_REQUEST).json({
           error: paramMissingError
         });
@@ -113,9 +113,9 @@ router.post(
 
       const user = new User({
         name,
-        organization,
         email,
         pwdHash,
+        organization: '4d616b696e67205761766573',
         role: userRole
       });
 
@@ -146,7 +146,8 @@ router.put(
   [
     check('email', 'Please include a valid email')
       .not()
-      .isEmpty(),
+      .isEmpty()
+      .isEmail(),
     check('name')
       .optional()
       .escape(),
@@ -165,6 +166,7 @@ router.put(
     }
 
     const { name, email, password, role } = req.body;
+    console.log(req.body);
 
     try {
       // Update user
@@ -184,8 +186,13 @@ router.put(
 
       user.name = name ? name : user.name;
       user.email = email ? email : user.email;
-      user.role = role ? role : user.role;
+      if (role === 0) {
+        user.role = UserRoles.Standard;
+      } else if (role === 1) {
+        user.role = UserRoles.Admin;
+      }
 
+      console.log(user.role, role);
       await user.save();
       return res.status(OK).json(user);
     } catch (err) {
@@ -201,22 +208,28 @@ router.put(
  *                    Delete - "DELETE /api/users/delete"
  ******************************************************************************/
 
-router.delete('/delete', adminMW, async (req: Request, res: Response) => {
-  const { email } = req.body;
+router.delete(
+  '/delete/:email',
+  adminMW,
+  async (req: Request, res: Response) => {
+    const { email } = req.params;
 
-  try {
-    const user = await User.findOneAndDelete({ email }).select('-pwdHash');
-    if (!user) {
-      return res.status(BAD_REQUEST).json({ error: 'Could not delete user.' });
+    try {
+      const user = await User.findOneAndDelete({ email }).select('-pwdHash');
+      if (!user) {
+        return res
+          .status(BAD_REQUEST)
+          .json({ error: 'Could not delete user.' });
+      }
+      return res.status(OK).json(user);
+    } catch (err) {
+      logger.error(err.message, err);
+      return res.status(BAD_REQUEST).json({
+        error: err.message
+      });
     }
-    return res.status(OK).json(user);
-  } catch (err) {
-    logger.error(err.message, err);
-    return res.status(BAD_REQUEST).json({
-      error: err.message
-    });
   }
-});
+);
 
 /******************************************************************************
  *                                     Export

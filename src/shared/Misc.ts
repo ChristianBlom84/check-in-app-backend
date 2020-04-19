@@ -12,6 +12,7 @@ const jwtService = new JwtService();
 export const paramMissingError =
   'One or more of the required parameters was missing.';
 export const userNotFoundError = 'User not found.';
+export const subscriberNotFoundError = 'Subscriber not found.';
 export const loginFailedErr = 'Login failed';
 
 // Numbers

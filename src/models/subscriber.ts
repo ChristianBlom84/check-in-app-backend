@@ -4,6 +4,7 @@ export interface Subscriber extends Document {
   name: string;
   email: string;
   pushToken: string;
+  organization?: string;
 }
 
 const SubscriberSchema: Schema = new Schema({
