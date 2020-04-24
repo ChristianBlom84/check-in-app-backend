@@ -33,7 +33,7 @@ router.post('/send', userMW, async (req: Request, res: Response) => {
       to: subscriber.pushToken,
       sound: 'default',
       body: messageData.message,
-      data: {}
+      data: { message: messageData.message }
     });
   }
 
@@ -62,8 +62,6 @@ router.post('/send', userMW, async (req: Request, res: Response) => {
       logger.info('Ticketchunk: ', tickets);
       const ticketsModel = new TicketChunk({ tickets });
       await ticketsModel.save();
-      const fromDatabase = await TicketChunk.find();
-      logger.info('From Database: ', fromDatabase);
     } catch (error) {
       logger.error(error);
       errors.push(error);
