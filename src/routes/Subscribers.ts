@@ -60,7 +60,8 @@ router.post('/check-device', async (req: Request, res: Response) => {
  ******************************************************************************/
 router.post('/register', async (req: Request, res: Response) => {
 	try {
-		const subscriberData: SubscriberData = req.body;
+    const subscriberData: SubscriberData = req.body;
+    
 		subscriberData.organization = '4d616b696e67205761766573';
 
 		console.log(subscriberData);
@@ -71,7 +72,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
 		if (!subscriber) {
 			await Subscriber.create(subscriberData);
-			return res.status(CREATED).json(subscriberData);
+			return res.status(CREATED).json({...subscriberData, organization: 'Making Waves'});
 		}
 
 		return res
