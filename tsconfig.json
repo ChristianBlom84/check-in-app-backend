@@ -24,6 +24,9 @@
       ],
       "@server": [
         "src/Server"
+      ],
+      "@util": [
+        "src/util"
       ]
     },
   },

@@ -12,7 +12,8 @@
     "@daos": "dist/daos",
     "@entities": "dist/src/entities",
     "@shared": "dist/src/shared",
-    "@server": "dist/src/Server"
+    "@server": "dist/src/Server",
+    "@util": "dist/util"
   },
   "dependencies": {
     "@types/cors": "^2.8.6",
