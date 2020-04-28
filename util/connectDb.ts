@@ -5,6 +5,8 @@ const db = `${process.env.MONGO_URI}`;
 
 export const connectDB = async (): Promise<void> => {
   try {
+    logger.info('Connecting to ', db);
+
     await mongoose.connect(db, {
       useNewUrlParser: true,
       useCreateIndex: true,
