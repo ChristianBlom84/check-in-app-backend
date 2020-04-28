@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "build": "node ./util/build.js",
-    "heroku-postbuild": "node ./util/build.js",
     "start": "cross-env ENV_FILE=production node -r ./env -r module-alias/register ./dist/start.js",
     "start-dev": "nodemon --config \"./util/nodemon.json\"",
     "test": "nodemon --config \"./util/nodemon.test.json\""
