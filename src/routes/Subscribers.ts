@@ -64,8 +64,6 @@ router.post('/register', async (req: Request, res: Response) => {
     
 		subscriberData.organization = '4d616b696e67205761766573';
 
-		console.log(subscriberData);
-
 		const subscriber = await Subscriber.findOne({
 			pushToken: subscriberData.pushToken
 		});

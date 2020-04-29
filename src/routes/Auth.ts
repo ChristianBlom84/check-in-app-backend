@@ -64,7 +64,6 @@ router.post('/login', async (req: Request, res: Response) => {
 router.get('/logout', async (req: Request, res: Response) => {
   try {
     const { key, options } = jwtCookieProps;
-    console.log(options.expires);
     res.clearCookie(key, {
       ...options,
       expires: new Date(options.maxAge)

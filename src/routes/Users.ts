@@ -166,7 +166,6 @@ router.put(
     }
 
     const { name, email, password, role } = req.body;
-    console.log(req.body);
 
     try {
       // Update user
@@ -192,7 +191,6 @@ router.put(
         user.role = UserRoles.Admin;
       }
 
-      console.log(user.role, role);
       await user.save();
       return res.status(OK).json(user);
     } catch (err) {
