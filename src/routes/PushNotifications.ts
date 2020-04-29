@@ -39,7 +39,7 @@ router.post(
 
     for (const subscriber of subscribers) {
       if (!Expo.isExpoPushToken(subscriber.pushToken)) {
-        console.error(
+        logger.error(
           `Push token ${subscriber.pushToken} is not a valid Expo push token`
         );
         continue;

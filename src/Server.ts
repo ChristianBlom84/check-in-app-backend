@@ -2,7 +2,6 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import cors from 'cors';
 import logger from 'morgan';
-import path from 'path';
 import BaseRouter from './routes';
 import { connectDB } from '../util/connectDb';
 
@@ -20,7 +19,6 @@ app.use(
     credentials: true
   })
 );
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', BaseRouter);
 
 // Connect Database
@@ -36,11 +34,6 @@ app.use('/api', BaseRouter);
     }, 5000);
   }
 })();
-
-// mongoose.connect(`${process.env.MONGO_URI}`, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// });
 
 // Export express instance
 export default app;
