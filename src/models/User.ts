@@ -1,4 +1,5 @@
 import { model, Model, Schema, Document } from 'mongoose';
+import { Notification } from './Notification';
 
 export enum UserRoles {
   Standard,
@@ -12,7 +13,7 @@ interface UserModel extends Document {
   email: string;
   pwdHash: string;
   organization?: string;
-  notifications: [string];
+  notifications: Notification[];
   role: TUserRoles;
 }
 
