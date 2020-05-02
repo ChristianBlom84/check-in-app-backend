@@ -7,6 +7,7 @@ import { Subscriber } from '../models/subscriber';
 import { TicketChunk } from '../models/TicketChunk';
 import { Notification } from '../models/Notification';
 import { JwtService } from '@shared';
+import { User } from 'src/models/User';
 
 // Init shared
 const router = Router();
@@ -56,6 +57,7 @@ router.post(
     const chunks = messages;
     const tickets = [];
     const errors = [];
+    let ticketsModel;
     // Send the chunks to the Expo push notification service. There are
     // different strategies you could use. A simple one is to send one chunk at a
     // time, which nicely spreads the load out over time:
@@ -75,7 +77,7 @@ router.post(
         // documentation:
         // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
         logger.info('Ticketchunk: ', tickets);
-        const ticketsModel = new TicketChunk({ tickets });
+        ticketsModel = new TicketChunk({ tickets });
         await ticketsModel.save();
       } catch (error) {
         logger.error(error);
@@ -93,6 +95,8 @@ router.post(
         req.signedCookies.JwtCookieKey
       );
 
+      const user = await User.findOne({ _id: userID });
+
       const notification = {
         date: new Date(),
         message: messageData.message,
@@ -100,6 +104,12 @@ router.post(
       };
 
       const notificationModel = new Notification(notification);
+
+      if (user) {
+        user.notifications.push(notificationModel);
+        await user.save();
+      }
+
       await notificationModel.save();
     } catch (error) {
       logger.error(error);
