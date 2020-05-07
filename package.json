@@ -1,6 +1,6 @@
 {
   "name": "check-in-app-backend",
-  "version": "0.0.0",
+  "version": "0.9.0",
   "scripts": {
     "build": "node ./util/build.js",
     "start": "cross-env ENV_FILE=production node -r ./env -r module-alias/register ./dist/src/start.js",
