@@ -27,12 +27,14 @@ router.post('/login', async (req: Request, res: Response) => {
       });
     }
     // Fetch user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate('notifications');
     if (!user) {
+      console.log('User not found');
       return res.status(UNAUTHORIZED).json({
         error: loginFailedErr
       });
     }
+    user.notifications;
     // Check password
     const pwdPassed = await bcrypt.compare(password, user.pwdHash);
     if (!pwdPassed) {
@@ -48,7 +50,7 @@ router.post('/login', async (req: Request, res: Response) => {
     const { key, options } = jwtCookieProps;
     res.cookie(key, jwt, options);
     // Return
-    return res.status(OK).json({ role: user.role });
+    return res.status(OK).json(user);
   } catch (err) {
     logger.error(err.message, err);
     return res.status(BAD_REQUEST).json({

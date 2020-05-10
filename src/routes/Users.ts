@@ -30,9 +30,9 @@ router.get('/current', userMW, async (req: Request, res: Response) => {
     }
     const clientData = await jwtService.decodeJwt(jwt);
 
-    const user = await User.findOne({ _id: clientData.userID }).select(
-      '-pwdHash'
-    );
+    const user = await User.findOne({ _id: clientData.userID })
+      .select('-pwdHash')
+      .populate('notifications');
 
     if (!user) {
       return res.status(BAD_REQUEST).json({ error: 'Could not fetch user.' });
@@ -53,7 +53,9 @@ router.get('/current', userMW, async (req: Request, res: Response) => {
 
 router.get('/all', adminMW, async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}).select('-pwdHash');
+    const users = await User.find({})
+      .select('-pwdHash')
+      .populate('notifications');
     if (!users) {
       return res.status(BAD_REQUEST).json({ error: 'Could not fetch users.' });
     }
