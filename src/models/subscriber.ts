@@ -1,10 +1,11 @@
 import { model, Model, Schema, Document } from 'mongoose';
+import { Organization } from './Organization';
 
 export interface Subscriber extends Document {
   name: string;
   email: string;
   pushToken: string;
-  organization?: string;
+  organization?: Organization;
 }
 
 const SubscriberSchema: Schema = new Schema({
