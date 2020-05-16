@@ -7,7 +7,7 @@ import { Subscriber } from '../models/subscriber';
 import { TicketChunk } from '../models/TicketChunk';
 import { Notification } from '../models/Notification';
 import { JwtService } from '@shared';
-import { User } from 'src/models/User';
+import { User } from '../models/User';
 
 // Init shared
 const router = Router();
