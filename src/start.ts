@@ -1,3 +1,4 @@
+require('module-alias/register');
 import app from '@server';
 import { logger } from '@shared';
 
