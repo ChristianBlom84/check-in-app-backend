@@ -20,7 +20,7 @@
     "@types/cors": "^2.8.6",
     "@types/mongoose": "^5.5.20",
     "@types/node-fetch": "^2.5.2",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "cross-env": "^6.0.3",
